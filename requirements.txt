@@ -1,0 +1,11 @@
+Flask
+numpy
+pandas
+scikit-learn
+joblib
+matplotlib
+fpdf2
+deepface
+opencv-python-headless
+tf-keras
+tensorflow==2.12.0

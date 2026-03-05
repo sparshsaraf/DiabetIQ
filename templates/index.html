@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Facial Recognition Based Healthrisk Predictor – Diabetes Prediction</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .card {
+        background: #fff;
+        width: 420px;
+        padding: 30px;
+        border-radius: 18px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+        animation: fadeIn 0.4s ease;
+    }
+
+    h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin: 10px 0 5px;
+    }
+
+    input[type="text"], input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background: #4e54c8;
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.25s;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #3d40a6;
+    }
+
+    #matchResult {
+        text-align: center;
+        color: green;
+        margin: 10px 0;
+        font-weight: 600;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 20px 0;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+</head>
+
+<body>
+<div class="card">
+
+<h1>Facial Recognition Healthrisk Prediction System</h1>
+
+<!-- NAME -->
+<label>Patient Name</label>
+<input type="text" id="name" placeholder="Enter patient's name">
+
+<!-- FACE UPLOAD -->
+<label>Upload Face</label>
+<input type="file" id="faceInput" accept="image/*">
+<button onclick="uploadFace()">Upload & Match Face</button>
+
+<p id="matchResult"></p>
+
+<hr>
+
+<!-- FORM -->
+<form method="POST" action="/predict">
+
+    {% for feat in features %}
+        <label>{{ feat }}</label>
+        <input type="text" name="{{ feat }}" id="{{ feat }}" placeholder="Enter {{ feat }}">
+    {% endfor %}
+
+    <!-- Hidden fields -->
+    <input type="hidden" name="patient_name" id="hidden_name">
+    <input type="hidden" name="uploaded_face_filename" id="hidden_face_filename">
+
+    <button type="submit">Predict</button>
+</form>
+
+</div>
+
+<script>
+function uploadFace() {
+    const input = document.getElementById("faceInput");
+    if (!input.files.length) {
+        alert("Please choose an image first.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("face", input.files[0]);
+
+    fetch("/upload_face", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        console.log("UPLOAD RESPONSE:", data);
+
+        // NEW USER
+        if (data.found === false) {
+            document.getElementById("matchResult").innerText = "New user detected.";
+            document.getElementById("hidden_face_filename").value = data.temp_img;
+        }
+
+        // EXISTING USER
+        if (data.found === true) {
+            document.getElementById("matchResult").innerText = "Matched: " + data.name;
+            document.getElementById("name").value = data.name;
+            document.getElementById("hidden_name").value = data.name;
+
+            // PUT the face filename so python receives it
+            if (data.temp_img) {  
+                document.getElementById("hidden_face_filename").value = data.temp_img;
+            }
+
+            for (const key in data.details) {
+                const field = document.getElementById(key);
+                if (field) field.value = data.details[key];
+            }
+        }
+    });
+}
+
+// Whenever name changes → update hidden field
+document.getElementById("name").addEventListener("input", function() {
+    document.getElementById("hidden_name").value = this.value;
+});
+</script>
+
+</body>
+</html>

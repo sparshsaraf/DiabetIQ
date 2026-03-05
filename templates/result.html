@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Prediction Result</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #8f94fb, #4e54c8);
+        font-family: "Inter", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    .card {
+        background: #fff;
+        padding: 40px;
+        width: 450px;
+        border-radius: 20px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.2);
+        text-align: center;
+        animation: fadeIn 0.4s ease;
+    }
+
+    h1 { margin-bottom: 15px; }
+
+    p {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+
+    a {
+        display: block;
+        background: #4e54c8;
+        color: white;
+        padding: 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        margin-top: 20px;
+        transition: 0.25s;
+    }
+
+    a:hover {
+        background: #3d40a6;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+</style>
+</head>
+
+<body>
+<div class="card">
+    <h1>Prediction Result</h1>
+
+    <p><strong>Patient:</strong> {{ patient_name }}</p>
+    <p><strong>Outcome:</strong> {{ "Diabetic" if result.label==1 else "Not Diabetic" }}</p>
+    <p><strong>Risk Probability:</strong> {{ (result.probability*100)|round(2) }}%</p>
+
+    <a href="{{ pdf_url }}">Download PDF Report</a>
+    <a href="/">Back to Home</a>
+</div>
+</body>
+</html>
