@@ -1,8 +1,8 @@
-# DiabetIQ 🩺
+# DiabetIQ 
 
 A machine learning-powered web app for early diabetes risk detection. Built with Flask, Scikit-learn, and DeepFace — DiabetIQ lets users input clinical data, get an instant risk prediction, and download a full diagnostic PDF report.
 
-> ⚠️ **Disclaimer:** This project was trained on a limited dataset (Pima Indians Diabetes Dataset) and is **not intended for real medical use or deployment**. DiabetIQ is a proof-of-concept that demonstrates what this kind of system could look like — a step in the right direction, not a finished product.
+>  **Disclaimer:** This project was trained on a limited dataset (Pima Indians Diabetes Dataset) and is **not intended for real medical use or deployment**. DiabetIQ is a proof-of-concept that demonstrates what this kind of system could look like — a step in the right direction, not a finished product.
 
 ---
 
